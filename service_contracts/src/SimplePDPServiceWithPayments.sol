@@ -298,6 +298,7 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
      * @param extraData Encoded data containing metadata, payer information, and signature
      */
     function proofSetCreated(uint256 proofSetId, address creator, bytes calldata extraData) external onlyPDPVerifier {
+        revert("Do we hear this message?");
         // Decode the extra data to get the metadata, payer address, and signature
         require(extraData.length > 0, "Extra data required for proof set creation");
         ProofSetCreateData memory createData = decodeProofSetCreateData(extraData);
