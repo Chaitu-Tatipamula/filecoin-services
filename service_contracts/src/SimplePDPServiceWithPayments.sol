@@ -722,10 +722,15 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
      * @return decoded The decoded ProofSetCreateData struct
      */
     function decodeProofSetCreateData(bytes calldata extraData) internal pure returns (ProofSetCreateData memory) {
-        string memory hexString = bytesToHexString(extraData);
-        revert(string(abi.encodePacked("ExtraData hex: ", hexString)));
-
-        return abi.decode(extraData, (ProofSetCreateData));
+        (string memory metadata, address payer, bool withCDN, bytes memory signature) = 
+        abi.decode(extraData, (string, address, bool, bytes));
+    
+        return ProofSetCreateData({
+            metadata: metadata,
+            payer: payer,
+            withCDN: withCDN,
+            signature: signature
+        });
     }
 
     // Helper function to convert bytes to hex string
