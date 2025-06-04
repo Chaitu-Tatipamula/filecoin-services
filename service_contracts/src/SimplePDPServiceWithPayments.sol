@@ -301,7 +301,7 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
         // Decode the extra data to get the metadata, payer address, and signature
         require(extraData.length > 0, "Extra data required for proof set creation");
         ProofSetCreateData memory createData = decodeProofSetCreateData(extraData);
-        revert("Point A");
+        
         // Validate the addresses
         require(createData.payer != address(0), "Payer address cannot be zero");
         require(creator != address(0), "Creator address cannot be zero");
@@ -312,7 +312,7 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
         // Update client state 
         uint256 clientDataSetId = clientDataSetIDs[createData.payer]++;
         clientProofSets[createData.payer].push(proofSetId);
-        revert("Point B");
+
         //Verify the client's signature
         require(
             verifyCreateProofSetSignature(
@@ -324,7 +324,7 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
             ),
             "Invalid signature for proof set creation"
         );
-        revert("Point C");
+
         // Initialize the ProofSetInfo struct
         ProofSetInfo storage info = proofSetInfo[proofSetId];
         info.payer = createData.payer;
@@ -333,7 +333,6 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
         info.commissionBps = operatorCommissionBps; // Use the contract's default commission rate
         info.clientDataSetId = clientDataSetId;
         info.withCDN = createData.withCDN;
-        revert("Point D");
 
         // Note: The payer must have pre-approved this contract to spend USDFC tokens before creating the proof set
 
@@ -346,7 +345,6 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
             address(this), // this contract acts as the arbiter
             operatorCommissionBps // commission rate
         );
-        revert("Point E");
         // Store the rail ID
         info.railId = railId;
 
@@ -360,7 +358,6 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
             DEFAULT_LOCKUP_PERIOD,
             PROOFSET_CREATION_FEE // lockupFixed equal to the one-time payment amount
         );
-        revert("Point F");
         // Charge the one-time proof set creation fee
         // This is a payment from payer to creator of a fixed amount
         payments.modifyRailPayment(
@@ -368,7 +365,6 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
             0, // Initial rate is 0, will be updated when roots are added
             PROOFSET_CREATION_FEE // One-time payment amount
         );
-        revert("Point G");
         // Emit event for tracking
         emit ProofSetRailCreated(proofSetId, railId, createData.payer, creator, createData.withCDN);
     }
@@ -846,10 +842,8 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
             )
         );
         bytes32 digest = _hashTypedDataV4(structHash);
-        revert("Point H");
         // Recover signer address from the signature
         address recoveredSigner = recoverSigner(digest, signature);
-        revert("Point I");
         // Check if the recovered signer matches the expected payer
         return recoveredSigner == payer;
     }
