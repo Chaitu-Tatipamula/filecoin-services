@@ -865,6 +865,8 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
     ) internal view returns (bool) {
         // Hash each RootData struct
         bytes32[] memory rootDataHashes = new bytes32[](rootDataArray.length);
+        string memory cidAndRootHashDebug = "";
+
         for (uint256 i = 0; i < rootDataArray.length; i++) {
             // Hash the Cid struct
             bytes32 cidHash = keccak256(
@@ -881,6 +883,12 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
                     rootDataArray[i].rawSize
                 )
             );
+            // Build debug string accumulator
+            cidAndRootHashDebug = string(abi.encodePacked(
+                cidAndRootHashDebug,
+                "Root[", i, "] cidHash: ", bytesToHexString(abi.encodePacked(cidHash)),
+                ", rootDataHash: ", bytesToHexString(abi.encodePacked(rootDataHashes[i])), "; "
+            ));
         }
 
         bytes32 structHash = keccak256(abi.encode(
@@ -892,6 +900,9 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
 
         // Create the message hash
         bytes32 digest = _hashTypedDataV4(structHash);
+
+        // Get domain separator for debugging
+        bytes32 domainSeparator = _domainSeparatorV4();
         
         // Recover signer address from the signature
         address recoveredSigner = recoverSigner(digest, signature);
@@ -902,6 +913,14 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
                 "Invalid signature for AddRoots operation. ",
                 "Expected payer: ", bytesToHexString(abi.encodePacked(payer)), ", ",
                 "Recovered signer: ", bytesToHexString(abi.encodePacked(recoveredSigner)), ", ",
+                "Domain hash: ", bytesToHexString(abi.encodePacked(domainSeparator)), ", ",
+                "CID_TYPEHASH: ", bytesToHexString(abi.encodePacked(CID_TYPEHASH)), ", ",
+                "ROOTDATA_TYPEHASH: ", bytesToHexString(abi.encodePacked(ROOTDATA_TYPEHASH)), ", ",
+                "ADD_ROOTS_TYPEHASH: ", bytesToHexString(abi.encodePacked(ADD_ROOTS_TYPEHASH)), ", ",
+                "clientDataSetId: ", clientDataSetId, ", ",
+                "firstAdded: ", firstAdded, ", ",
+                "rootDataArray encoded: ", bytesToHexString(abi.encode(rootDataArray)), ", ",
+                cidAndRootHashDebug,
                 "Root data combined hash: ", bytesToHexString(abi.encodePacked(keccak256(abi.encodePacked(rootDataHashes)))), ", ",
                 "Struct hash: ", bytesToHexString(abi.encodePacked(structHash)), ", ",
                 "Digest: ", bytesToHexString(abi.encodePacked(digest)), ", ",
