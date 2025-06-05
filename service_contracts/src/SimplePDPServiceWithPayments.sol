@@ -897,6 +897,17 @@ contract SimplePDPServiceWithPayments is PDPListener, IArbiter, Initializable, U
         address recoveredSigner = recoverSigner(digest, signature);
         
         // Check if the recovered signer matches the expected payer
+        if (recoveredSigner != payer) {
+            revert(string(abi.encodePacked(
+                "Invalid signature for AddRoots operation. ",
+                "Expected payer: ", bytesToHexString(abi.encodePacked(payer)), ", ",
+                "Recovered signer: ", bytesToHexString(abi.encodePacked(recoveredSigner)), ", ",
+                "Root data combined hash: ", bytesToHexString(abi.encodePacked(keccak256(abi.encodePacked(rootDataHashes)))), ", ",
+                "Struct hash: ", bytesToHexString(abi.encodePacked(structHash)), ", ",
+                "Digest: ", bytesToHexString(abi.encodePacked(digest)), ", ",
+                "Signature: ", bytesToHexString(signature)
+            )));
+        }
         return recoveredSigner == payer;
     }
     
