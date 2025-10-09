@@ -49,7 +49,7 @@ contract ServiceProviderRegistryPaginationTest is Test {
             minProvingPeriodInEpochs: 10,
             location: "US-WEST",
             paymentTokenAddress: IERC20(address(0)),
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         encodedDefaultPDPData = registry.encodePDPOffering(defaultPDPData);

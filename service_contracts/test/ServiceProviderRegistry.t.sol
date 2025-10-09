@@ -69,7 +69,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 2880,
             location: "US-East",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         // Encode PDP data
@@ -113,7 +113,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 2880,
             location: "US-East",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         // Encode PDP data
@@ -185,7 +185,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 2880,
             location: "US-East",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         bytes memory encodedData = abi.encode(pdpData);
@@ -228,7 +228,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 2880,
             location: "US-East",
             paymentTokenAddress: IERC20(address(0)),
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         bytes memory encodedData = abi.encode(pdpData);
@@ -264,7 +264,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 2880,
             location: "US-East",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         bytes memory encodedData = abi.encode(pdpData);
@@ -329,7 +329,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 2880,
             location: "US-East",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         // Encode PDP data
@@ -568,7 +568,7 @@ contract ServiceProviderRegistryTest is Test {
             minProvingPeriodInEpochs: 1,
             location: "US",
             paymentTokenAddress: IERC20(address(0)),
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
         return abi.encode(pdpOffering);
     }

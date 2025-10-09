@@ -83,7 +83,7 @@ contract ServiceProviderRegistryFullTest is Test {
             minProvingPeriodInEpochs: 2880, // 1 day in epochs (30 second blocks)
             location: "North America",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         updatedPDPData = ServiceProviderRegistryStorage.PDPOffering({
@@ -96,7 +96,7 @@ contract ServiceProviderRegistryFullTest is Test {
             minProvingPeriodInEpochs: 1440, // 12 hours in epochs
             location: "Europe",
             paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-            ipniPeerId: hex""
+            ipniPeerId: ""
         });
 
         // Encode PDP data
@@ -1808,10 +1808,11 @@ contract ServiceProviderRegistryFullTest is Test {
     }
 
     // ========== IPNI Peer ID Validation Tests ==========
+    // ========== IPNI Peer ID Validation Tests ==========
 
     function testRegisterWithEmptyIpniPeerId() public {
         ServiceProviderRegistryStorage.PDPOffering memory validPDP = defaultPDPData;
-        validPDP.ipniPeerId = hex"";
+        validPDP.ipniPeerId = "";
         bytes memory encodedPDP = abi.encode(validPDP);
         string[] memory emptyKeys = new string[](0);
         string[] memory emptyValues = new string[](0);
@@ -1830,14 +1831,13 @@ contract ServiceProviderRegistryFullTest is Test {
 
         // Verify it was stored correctly
         (ServiceProviderRegistryStorage.PDPOffering memory stored,,) = registry.getPDPService(providerId);
-        assertEq(stored.ipniPeerId.length, 0, "Empty IPNI peer ID should be stored");
+        assertEq(bytes(stored.ipniPeerId).length, 0, "Empty IPNI peer ID should be stored");
     }
 
     function testRegisterWithMaxLengthIpniPeerId() public {
-        bytes memory maxPeerId = new bytes(128);
-        for (uint256 i = 0; i < 128; i++) {
-            maxPeerId[i] = 0xFF;
-        }
+        // Create a 256-character string (max length for CIDv1 base32)
+        string memory maxPeerId = "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        require(bytes(maxPeerId).length == 256, "Test string should be exactly 256 chars");
 
         ServiceProviderRegistryStorage.PDPOffering memory validPDP = defaultPDPData;
         validPDP.ipniPeerId = maxPeerId;
@@ -1855,19 +1855,18 @@ contract ServiceProviderRegistryFullTest is Test {
             emptyKeys,
             emptyValues
         );
-        assertEq(providerId, 1, "Should succeed with 128-byte ipniPeerId");
+        assertEq(providerId, 1, "Should succeed with 256-char ipniPeerId");
 
         // Verify it was stored correctly
         (ServiceProviderRegistryStorage.PDPOffering memory stored,,) = registry.getPDPService(providerId);
-        assertEq(stored.ipniPeerId.length, 128, "128-byte IPNI peer ID should be stored");
+        assertEq(bytes(stored.ipniPeerId).length, 256, "256-char IPNI peer ID should be stored");
         assertEq(stored.ipniPeerId, maxPeerId, "IPNI peer ID should match");
     }
 
     function testRegisterWithTooLongIpniPeerId() public {
-        bytes memory longPeerId = new bytes(129);
-        for (uint256 i = 0; i < 129; i++) {
-            longPeerId[i] = 0xFF;
-        }
+        // Create a 257-character string (exceeds max)
+        string memory longPeerId = "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        require(bytes(longPeerId).length == 257, "Test string should be exactly 257 chars");
 
         ServiceProviderRegistryStorage.PDPOffering memory invalidPDP = defaultPDPData;
         invalidPDP.ipniPeerId = longPeerId;
@@ -1889,9 +1888,8 @@ contract ServiceProviderRegistryFullTest is Test {
     }
 
     function testRegisterWithRealisticIpniPeerId() public {
-        // Typical libp2p peer ID is ~38 bytes (multihash of public key)
-        // Format: 0x1220<32-byte sha256 hash> for a total of 34 bytes
-        bytes memory realisticPeerId = hex"12205f8bb7e5e0e8e5f8e5e0e8e5f8e5e0e8e5f8e5e0e8e5f8e5e0e8e5f8abcdef01";
+        // Typical CIDv0 peer ID (base58btc) - 46 characters
+        string memory realisticPeerId = "QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N";
 
         ServiceProviderRegistryStorage.PDPOffering memory validPDP = defaultPDPData;
         validPDP.ipniPeerId = realisticPeerId;
@@ -1913,7 +1911,7 @@ contract ServiceProviderRegistryFullTest is Test {
         // Verify it was stored correctly
         (ServiceProviderRegistryStorage.PDPOffering memory stored,,) = registry.getPDPService(providerId);
         assertEq(stored.ipniPeerId, realisticPeerId, "IPNI peer ID should be stored correctly");
-        assertEq(stored.ipniPeerId.length, 34, "Realistic IPNI peer ID should be 34 bytes");
+        assertEq(bytes(stored.ipniPeerId).length, 46, "Realistic IPNI peer ID should be 46 chars");
     }
 
     function testUpdateIpniPeerId() public {
@@ -1934,10 +1932,10 @@ contract ServiceProviderRegistryFullTest is Test {
 
         // Verify initial state
         (ServiceProviderRegistryStorage.PDPOffering memory initialStored,,) = registry.getPDPService(providerId);
-        assertEq(initialStored.ipniPeerId.length, 0, "Initial IPNI peer ID should be empty");
+        assertEq(bytes(initialStored.ipniPeerId).length, 0, "Initial IPNI peer ID should be empty");
 
-        // Update with a peer ID
-        bytes memory newPeerId = hex"12205f8bb7e5e0e8e5f8e5e0e8e5f8e5e0e8e5f8e5e0e8e5f8e5e0e8e5f8abcdef01";
+        // Update with a peer ID (CIDv1 base32)
+        string memory newPeerId = "bafzbeic5w7yp4ha4g5dppc7wf4ha4g5dppc7wf4ha4g5d";
         ServiceProviderRegistryStorage.PDPOffering memory updatedData = updatedPDPData;
         updatedData.ipniPeerId = newPeerId;
         bytes memory encodedUpdatedData = abi.encode(updatedData);
@@ -1948,7 +1946,7 @@ contract ServiceProviderRegistryFullTest is Test {
         // Verify update
         (ServiceProviderRegistryStorage.PDPOffering memory updatedStored,,) = registry.getPDPService(providerId);
         assertEq(updatedStored.ipniPeerId, newPeerId, "IPNI peer ID should be updated");
-        assertEq(updatedStored.ipniPeerId.length, 34, "Updated IPNI peer ID should be 34 bytes");
+        assertEq(bytes(updatedStored.ipniPeerId).length, 46, "Updated IPNI peer ID should be 46 chars");
     }
 
     function testUpdateWithTooLongIpniPeerId() public {
@@ -1967,11 +1965,8 @@ contract ServiceProviderRegistryFullTest is Test {
             emptyValues
         );
 
-        // Try to update with too long peer ID
-        bytes memory longPeerId = new bytes(129);
-        for (uint256 i = 0; i < 129; i++) {
-            longPeerId[i] = 0xAB;
-        }
+        // Try to update with too long peer ID (257 chars)
+        string memory longPeerId = "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
         ServiceProviderRegistryStorage.PDPOffering memory invalidData = updatedPDPData;
         invalidData.ipniPeerId = longPeerId;

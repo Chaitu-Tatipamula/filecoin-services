@@ -150,7 +150,7 @@ contract FilecoinWarmStorageServiceOwnerTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US",
                     paymentTokenAddress: IERC20(address(0)),
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             capabilityKeys,

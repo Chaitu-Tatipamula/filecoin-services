@@ -126,7 +126,7 @@ contract ProviderValidationTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US-West",
                     paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             new string[](0),
@@ -165,7 +165,7 @@ contract ProviderValidationTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US-West",
                     paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             new string[](0),

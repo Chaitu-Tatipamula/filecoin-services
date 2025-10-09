@@ -166,7 +166,7 @@ contract FilecoinWarmStorageServiceTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US-Central",
                     paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             new string[](0),
@@ -190,7 +190,7 @@ contract FilecoinWarmStorageServiceTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US-Central",
                     paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             new string[](0),
@@ -214,7 +214,7 @@ contract FilecoinWarmStorageServiceTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US-Central",
                     paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             new string[](0),
@@ -238,7 +238,7 @@ contract FilecoinWarmStorageServiceTest is Test {
                     minProvingPeriodInEpochs: 2880,
                     location: "US-Central",
                     paymentTokenAddress: IERC20(address(0)), // Payment in FIL
-                    ipniPeerId: hex""
+                    ipniPeerId: ""
                 })
             ),
             new string[](0),
