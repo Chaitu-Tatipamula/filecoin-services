@@ -1836,7 +1836,8 @@ contract ServiceProviderRegistryFullTest is Test {
 
     function testRegisterWithMaxLengthIpniPeerId() public {
         // Create a 256-character string (max length for CIDv1 base32)
-        string memory maxPeerId = "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        string memory maxPeerId =
+            "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         require(bytes(maxPeerId).length == 256, "Test string should be exactly 256 chars");
 
         ServiceProviderRegistryStorage.PDPOffering memory validPDP = defaultPDPData;
@@ -1865,7 +1866,8 @@ contract ServiceProviderRegistryFullTest is Test {
 
     function testRegisterWithTooLongIpniPeerId() public {
         // Create a 257-character string (exceeds max)
-        string memory longPeerId = "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        string memory longPeerId =
+            "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         require(bytes(longPeerId).length == 257, "Test string should be exactly 257 chars");
 
         ServiceProviderRegistryStorage.PDPOffering memory invalidPDP = defaultPDPData;
@@ -1941,7 +1943,9 @@ contract ServiceProviderRegistryFullTest is Test {
         bytes memory encodedUpdatedData = abi.encode(updatedData);
 
         vm.prank(provider1);
-        registry.updateProduct(ServiceProviderRegistryStorage.ProductType.PDP, encodedUpdatedData, emptyKeys, emptyValues);
+        registry.updateProduct(
+            ServiceProviderRegistryStorage.ProductType.PDP, encodedUpdatedData, emptyKeys, emptyValues
+        );
 
         // Verify update
         (ServiceProviderRegistryStorage.PDPOffering memory updatedStored,,) = registry.getPDPService(providerId);
@@ -1966,7 +1970,8 @@ contract ServiceProviderRegistryFullTest is Test {
         );
 
         // Try to update with too long peer ID (257 chars)
-        string memory longPeerId = "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        string memory longPeerId =
+            "bafzbeiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
         ServiceProviderRegistryStorage.PDPOffering memory invalidData = updatedPDPData;
         invalidData.ipniPeerId = longPeerId;
@@ -1974,6 +1979,8 @@ contract ServiceProviderRegistryFullTest is Test {
 
         vm.prank(provider1);
         vm.expectRevert("IPNI peer ID too long");
-        registry.updateProduct(ServiceProviderRegistryStorage.ProductType.PDP, encodedInvalidData, emptyKeys, emptyValues);
+        registry.updateProduct(
+            ServiceProviderRegistryStorage.ProductType.PDP, encodedInvalidData, emptyKeys, emptyValues
+        );
     }
 }
